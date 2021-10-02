@@ -6,38 +6,22 @@ import "hardhat/console.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract YourContract {
-    // declare count
-    uint256 public count;
+    address public owner = 0x99E628ef85CDD8fb1C088f8658008192bc85021a;
+    mapping(address => uint256) balances;
 
-    // declare owner
-    address public owner;
-
-    constructor() {
-        // set owner to sender
-        owner = 0x99E628ef85CDD8fb1C088f8658008192bc85021a;
+    function set(address _addr, uint256 amount) public {
+        balances[_addr] = amount;
     }
 
-    // function to get the count, dupicative because count is public
-    // function get() public view returns (uint256) {
-    //     return count;
-    // }
-
-    // function to increment count by 1
-    function inc() public {
-        // condition that requires
-        require(msg.sender == owner, "You are not the owner!");
-        count++;
+    function increment(address _addr) public {
+        balances[_addr]++;
     }
 
-    // function to decrement count
-    function dec() public {
-        require(msg.sender == owner, "You are not the owner!");
-        count--;
+    function decrement(address _addr) public {
+        balances[_addr]--;
     }
 
-    // function to increase count by amount
-    function add(uint256 amount) public {
-        require(msg.sender == owner, "You are not the owner!");
-        count += amount;
+    function get(address _addr) public view returns (uint256) {
+        return balances[_addr];
     }
 }
