@@ -7,21 +7,26 @@ import "hardhat/console.sol";
 
 contract YourContract {
     address public owner = 0x99E628ef85CDD8fb1C088f8658008192bc85021a;
-    mapping(address => uint256) balances;
 
-    function set(address _addr, uint256 amount) public {
-        balances[_addr] = amount;
+    // Nested mappings
+    mapping(address => mapping(uint256 => bool)) public nestedMap;
+
+    // func to set nested map
+    function setMap(
+        address _addr,
+        uint256 _i,
+        bool _bool
+    ) public {
+        nestedMap[_addr][_i] = _bool;
     }
 
-    function increment(address _addr) public {
-        balances[_addr]++;
+    // func to delete nest map
+    function removeMap(address _addr, uint256 _i) public {
+        delete nestedMap[_addr][_i];
     }
 
-    function decrement(address _addr) public {
-        balances[_addr]--;
-    }
-
-    function get(address _addr) public view returns (uint256) {
-        return balances[_addr];
+    // func to get nested map
+    function get(address _addr, uint256 _i) public view returns (bool) {
+        return nestedMap[_addr][_i];
     }
 }
