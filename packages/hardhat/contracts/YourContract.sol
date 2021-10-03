@@ -8,25 +8,45 @@ import "hardhat/console.sol";
 contract YourContract {
     address public owner = 0x99E628ef85CDD8fb1C088f8658008192bc85021a;
 
-    // Nested mappings
-    mapping(address => mapping(uint256 => bool)) public nestedMap;
-
-    // func to set nested map
-    function setMap(
-        address _addr,
-        uint256 _i,
-        bool _bool
-    ) public {
-        nestedMap[_addr][_i] = _bool;
+    struct Todo {
+        string task;
+        bool completed;
+        // bools default value is false
     }
 
-    // func to delete nest map
-    function removeMap(address _addr, uint256 _i) public {
-        delete nestedMap[_addr][_i];
+    Todo[] public todos;
+
+    function addTodo(string memory _task) public {
+        // 3 ways to initilize a struct
+        // like a function
+        todos.push(Todo(_task, false));
+
+        // key value pair
+        // todos.push(Todo({task: _task, completed: false}));
+
+        // init empty struct then update
+        // Todo memory todo;
+        // todo.task = _task;
+        // todos.push(todo);
     }
 
-    // func to get nested map
-    function get(address _addr, uint256 _i) public view returns (bool) {
-        return nestedMap[_addr][_i];
+    function updateTodo(uint256 _index, string memory _task) public {
+        Todo storage todo = todos[_index];
+        todo.task = _task;
+    }
+
+    function toggleCompleted(uint256 _index) public {
+        Todo storage todo = todos[_index];
+        todo.completed = !todo.completed;
+    }
+
+    // free getter function with public variable
+    function getTodo(uint256 _index)
+        public
+        view
+        returns (string memory text, bool completed)
+    {
+        Todo storage todo = todos[_index];
+        return (todo.task, todo.completed);
     }
 }
