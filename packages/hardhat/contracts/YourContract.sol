@@ -16,7 +16,12 @@ contract YourContract {
 
     Todo[] public todos;
 
-    function addTodo(string memory _task) public {
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not the owner!");
+        _;
+    }
+
+    function addTodo(string memory _task) public onlyOwner {
         // 3 ways to initilize a struct
         // like a function
         todos.push(Todo(_task, false));
@@ -30,12 +35,12 @@ contract YourContract {
         // todos.push(todo);
     }
 
-    function updateTodo(uint256 _index, string memory _task) public {
+    function updateTodo(uint256 _index, string memory _task) public onlyOwner {
         Todo storage todo = todos[_index];
         todo.task = _task;
     }
 
-    function toggleCompleted(uint256 _index) public {
+    function toggleCompleted(uint256 _index) public onlyOwner {
         Todo storage todo = todos[_index];
         todo.completed = !todo.completed;
     }
