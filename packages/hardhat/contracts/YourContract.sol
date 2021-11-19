@@ -5,28 +5,44 @@ import "hardhat/console.sol";
 
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
-// example nested map in allowance contract
 contract YourContract {
-    // mapping address to another mapping
-    mapping(address => mapping(address => uint256)) public allowance;
+    struct Character {
+        string name;
+        string race;
+        uint256 age;
+        uint256 level;
+    }
 
-    function setAllowance(
-        address _addrOwner,
-        address _addrSpender,
-        uint256 _amount
+    Character[] public characters;
+
+    mapping(uint256 => address) public characterToOwner;
+    mapping(address => uint256) public ownerToCharacter;
+    mapping(address => uint256) public ownerCharacterCount;
+
+    event NewCharacter(
+        address _owner,
+        uint256 id,
+        string _name,
+        string _race,
+        uint256 _age,
+        uint256 level
+    );
+
+    function createCharacter(
+        string memory _name,
+        string memory _race,
+        uint256 _age
     ) public {
-        allowance[_addrOwner][_addrSpender] = _amount;
+        characters.push(Character(_name, _race, _age, 1));
+        uint256 id = characters.length - 1;
+        characterToOwner[id] = msg.sender;
+        ownerToCharacter[msg.sender] = id;
+        ownerCharacterCount[msg.sender]++;
+        emit NewCharacter(msg.sender, id, _name, _race, _age, 1);
     }
 
-    function getAllowance(address _addrOwner, address _addrSpender)
-        public
-        view
-        returns (uint256)
-    {
-        return allowance[_addrOwner][_addrSpender];
-    }
-
-    function removeAllowance(address _addrOwner, address _addrSpender) public {
-        delete allowance[_addrOwner][_addrSpender];
+    function showMyCharacterName() public view returns (string memory) {
+        uint256 characterId = ownerToCharacter[msg.sender];
+        return characters[characterId].name;
     }
 }
